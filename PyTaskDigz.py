@@ -78,6 +78,7 @@ def update():
 t.cprint('Digz Todo-List', 'green', attrs=['blink'])
 
 while True:
+    clear()
     MENU = f"""\n\033[1;32m Gerenciador de Tarefas:\033[m\r \033[33m
     [1] Adicionar Tarefa
     [2] Alterar Tarefa
