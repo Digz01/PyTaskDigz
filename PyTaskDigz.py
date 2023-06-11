@@ -2,7 +2,7 @@ import os
 import time
 import termcolor as t
 
-list_user = []
+task_list = []
 
 def clear():
     if os.name == 'nt':
@@ -17,43 +17,61 @@ def alert():
 
 
 def add_todo():
-    print('\033[1;32mDigite a tarefa\033[m')
+    print('\033[1;32mDigite a tarefa:    [V]oltar\033[m')
     task = input('-> ')
+
+    if task == 'V':
+        time.sleep(0.5);clear()
+        return
+
+
     print('\033[1;32mTarefa adicionada com sucesso!\033[m')
-    list_user.append(task);time.sleep(1);clear()
+    task_list.append(task);time.sleep(1);clear()
 
 
 def list_todo():
     time.sleep(0.5)
-    print(f'\033[1;32mTarefas Pendentes: \033[m{len(list_user)}')
-    
-    for index,task in enumerate(list_user):
+    print(f'\033[1;32mTarefas Pendentes: \033[m{len(task_list)}')
+
+    for index,task in enumerate(task_list):
         print(f'[{index+1}] {"".join(task)}')
 
 
 def delete_todo():
-    print('\033[1;32mQual Tarefa Deseja Apagar?\033[m\n')
-    
+    print('\033[1;32mQual Tarefa Deseja Apagar?    [V]oltar\033[m\n')
     list_todo()
     
-    choice = int(input('-> '))
+    choice = input('-> ')
+
+    if choice == 'V':
+        time.sleep(0.5);clear()
+        return
+    else:
+        choice = int(choice)
+
     print('\033[1;32mTarefa Apagada Com Sucesso\033[m')
-    
-    list_user.pop(choice-1);time.sleep(1)
+
+    task_list.pop(choice-1);time.sleep(1)
     clear()
-    
+
 
 def update():
-    print('\033[1;32mQual Tarefa Deseja Alterar?\033[m\n')
+    print('\033[1;32mQual Tarefa Deseja Alterar?    [V]oltar\033[m\n')
     list_todo()
-    
-    index = int(input('-> '))
-    new_value = input('\033[33mSobrescrever com -> \033[m')
-    list_user[index-1] = new_value
-    
-    t.cprint(f'\nTareda Alterada -> [{index}]','cyan')
+    index = input('-> ')
 
-    time.sleep(0.5)
+    if index == 'V':
+        time.sleep(0.5);clear()
+        return
+    else:
+        index = int(index)
+
+    new_value = input('\033[33mSobrescrever com -> \033[m')
+    task_list[index-1] = new_value
+
+    t.cprint(f'Tareda Alterada -> [{index}]','cyan')
+
+    time.sleep(1);clear()
 
 
 
@@ -67,7 +85,7 @@ while True:
     [4] Deletar Tarefa
     [5] Encerrar
     \r-> \033[m"""
-    
+
     try:
         option = input(MENU);clear()
 
@@ -75,14 +93,14 @@ while True:
             case '1':
                 add_todo()
             case '2':
-                if len(list_user) == 0:
+                if len(task_list) == 0:
                     alert()
                 else:
                     update()
             case '3':
                 list_todo()
             case '4':
-                if len(list_user) == 0:
+                if len(task_list) == 0:
                     alert()
                 else:
                     delete_todo()
@@ -92,7 +110,7 @@ while True:
                 break
             case _:
                 t.cprint('Invalid Option!','red',attrs=['bold'])
-                    
+
     except KeyboardInterrupt:
         t.cprint('\nExiting...','red');time.sleep(1)
         break
