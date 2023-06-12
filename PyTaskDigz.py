@@ -1,6 +1,6 @@
 import os
 import time
-import termcolor as t
+from termcolor import cprint
 
 task_list = []
 
@@ -37,22 +37,32 @@ def list_todo():
         print(f'[{index+1}] {"".join(task)}')
 
 
+
 def delete_todo():
     print('\033[1;32mQual Tarefa Deseja Apagar?    [V]oltar\033[m\n')
     list_todo()
-    
     choice = input('-> ')
 
-    if choice == 'V':
+    if choice.upper() == 'V':
         time.sleep(0.5);clear()
         return
-    else:
+    
+    try:
         choice = int(choice)
+    except IndexError:
+        cprint('Tarefa Nao Existe','red')
+        time.sleep(1)
+        clear()
 
-    print('\033[1;32mTarefa Apagada Com Sucesso\033[m')
-
-    task_list.pop(choice-1);time.sleep(1)
-    clear()
+    if choice <= len(task_list):
+        print('\033[1;32mTarefa Apagada Com Sucesso\033[m')
+        task_list.pop(choice-1)
+        time.sleep(1)
+        clear()
+    else:
+        cprint('Tarefa Nao Existe','red')
+        time.sleep(1)
+        clear()
 
 
 def update():
@@ -60,25 +70,35 @@ def update():
     list_todo()
     index = input('-> ')
 
-    if index == 'V':
-        time.sleep(0.5);clear()
+    if index.upper() == 'V':
+        time.sleep(0.5)
+        clear()
         return
-    else:
+
+    try:
         index = int(index)
+    except ValueError:
+        cprint('Tarefa Nao Existe','red')
+        time.sleep(0.5)
+        clear()
+        return update()
 
-    new_value = input('\033[33mSobrescrever com -> \033[m')
-    task_list[index-1] = new_value
-
-    t.cprint(f'Tareda Alterada -> [{index}]','cyan')
+    if index <= len(task_list):
+        new_value = input('\033[33mSobrescrever com -> \033[m')
+        task_list[int(index)-1] = new_value
+        cprint(f'Tarefa Alterada -> [{index}]','cyan')
+    else:
+        cprint('Tarefa Nao Existe','red')
 
     time.sleep(1);clear()
 
 
 
-t.cprint('Digz Todo-List', 'green', attrs=['blink'])
 
+clear()
 while True:
-    clear()
+    cprint('\nDigz Todo-List', 'green', attrs=['blink'])
+    
     MENU = f"""\n\033[1;32m Gerenciador de Tarefas:\033[m\r \033[33m
     [1] Adicionar Tarefa
     [2] Alterar Tarefa
@@ -100,6 +120,7 @@ while True:
                     update()
             case '3':
                 list_todo()
+                # input()
             case '4':
                 if len(task_list) == 0:
                     alert()
@@ -107,11 +128,13 @@ while True:
                     delete_todo()
             case '5':
                 time.sleep(0.5)
-                t.cprint('Exited','red')
+                cprint('Exited','red')
                 break
             case _:
-                t.cprint('Invalid Option!','red',attrs=['bold'])
+                cprint('Invalid Option!','red',attrs=['bold'])
 
     except KeyboardInterrupt:
-        t.cprint('\nExiting...','red');time.sleep(1)
+        cprint('\nExiting...','red')
+        time.sleep(1)
+        clear()
         break
