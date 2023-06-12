@@ -52,6 +52,7 @@ def delete_todo():
         cprint('Tarefa Nao Existe','red')
         time.sleep(1)
         clear()
+        return delete_todo()
 
     if 0 < choice <= len(task_list):
         cprint('Tarefa Apagada Com Sucesso','green')
