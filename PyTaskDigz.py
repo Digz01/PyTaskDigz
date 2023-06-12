@@ -12,12 +12,12 @@ def clear():
 
 
 def alert():
-    print('\033[1;31m[!] Nenhuma Tarefa a ser apagada ou modificada!\033[m')
+    cprint('[!] Nenhuma Tarefa a ser apagada ou modificada!','red')
     time.sleep(1)
 
 
 def add_todo():
-    print('\033[1;32mDigite a tarefa:    [V]oltar\033[m')
+    cprint('Digite a tarefa:\t[V]oltar','green')
     task = input('-> ')
 
     if task == 'V':
@@ -25,7 +25,7 @@ def add_todo():
         return
 
 
-    print('\033[1;32mTarefa adicionada com sucesso!\033[m')
+    cprint('Tarefa adicionada com sucesso!','green')
     task_list.append(task);time.sleep(1);clear()
 
 
@@ -34,7 +34,7 @@ def list_todo():
     print(f'\033[1;32mTarefas Pendentes: \033[m{len(task_list)}')
 
     for index,task in enumerate(task_list):
-        print(f'[{index+1}] {"".join(task)}')
+        print(f'[{index+1}] {task}')
 
 
 
