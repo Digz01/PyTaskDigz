@@ -203,7 +203,11 @@ def begin():
 
 if __name__ == '__main__':
 
-    home_user = os.getenv('HOME')
+    if os.name == 'nt':
+        home_user = os.getenv('USERPROFILE')
+    elif os.name == 'posix':
+        home_user = os.getenv('HOME')
+
     directory = '.pytaskdigz/db'
     
     path = os.path.join(home_user,directory)
