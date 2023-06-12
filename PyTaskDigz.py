@@ -97,9 +97,18 @@ def update():
 
 clear()
 while True:
-    cprint('\nDigz Todo-List', 'green', attrs=['blink'])
+    cprint("""\n
+.-,--.              ,--,--'    .       
+' |   \ . ,-. ,_,   `- | ,-. ,-| ,-.   
+, |   / | | |  /     , | | | | | | |   
+`-^--'  ' `-| '"'    `-' `-' `-' `-'   
+           ,|      v1                  
+           `'                          
+           """\
+        ,'red', attrs=['bold','blink'])
 
-    MENU = f"""\n\033[1;32m Gerenciador de Tarefas:\033[m\r \033[33m
+
+    MENU = f"""\n Gerenciador de Tarefas:\r \033[33m
     [1] Adicionar Tarefa
     [2] Alterar Tarefa
     [3] Ver Tarefas
@@ -108,33 +117,38 @@ while True:
     \r-> \033[m"""
 
     try:
-        option = input(MENU)
+        option = input(colored(MENU,'green'))
         clear()
 
         match option:
             case '1':
                 add_todo()
+                
             case '2':
                 if len(task_list) == 0:
                     alert()
                 else:
                     update()
+                    
             case '3':
                 list_todo()
+                
             case '4':
                 if len(task_list) == 0:
                     alert()
                 else:
                     delete_todo()
+                    
             case '5':
                 time.sleep(0.5)
                 cprint('Encerrado','red')
                 break
+            
             case _:
                 cprint('Opcao Invalida!','red',attrs=['bold'])
 
     except KeyboardInterrupt:
-        cprint('Saindo...','red')
+        cprint('\nSaindo...','red')
         time.sleep(1)
         clear()
         break
