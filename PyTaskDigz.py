@@ -37,7 +37,6 @@ def list_todo():
         print(f'[{index+1}] {task}')
 
 
-
 def delete_todo():
     cprint('Qual Tarefa Deseja Apagar?\t[V]oltar\n','green')
     list_todo()
@@ -46,7 +45,7 @@ def delete_todo():
     if choice.upper() == 'V':
         time.sleep(0.5);clear()
         return
-    
+
     try:
         choice = int(choice)
     except ValueError:
@@ -98,7 +97,7 @@ def update():
 clear()
 while True:
     cprint('\nDigz Todo-List', 'green', attrs=['blink'])
-    
+
     MENU = f"""\n\033[1;32m Gerenciador de Tarefas:\033[m\r \033[33m
     [1] Adicionar Tarefa
     [2] Alterar Tarefa
