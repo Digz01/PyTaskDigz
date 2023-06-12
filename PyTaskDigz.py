@@ -1,6 +1,6 @@
 import os
 import time
-from termcolor import cprint
+from termcolor import cprint,colored
 
 task_list = []
 
@@ -20,7 +20,7 @@ def add_todo():
     cprint('Digite a tarefa:\t[V]oltar','green')
     task = input('-> ')
 
-    if task == 'V':
+    if task.upper() == 'V':
         time.sleep(0.5);clear()
         return
 
@@ -31,7 +31,7 @@ def add_todo():
 
 def list_todo():
     time.sleep(0.5)
-    print(f'\033[1;32mTarefas Pendentes: \033[m{len(task_list)}')
+    cprint(f'Tarefas Pendentes: {len(task_list)}','green')
 
     for index,task in enumerate(task_list):
         print(f'[{index+1}] {task}')
@@ -39,7 +39,7 @@ def list_todo():
 
 
 def delete_todo():
-    print('\033[1;32mQual Tarefa Deseja Apagar?    [V]oltar\033[m\n')
+    cprint('Qual Tarefa Deseja Apagar?\t[V]oltar\n','green')
     list_todo()
     choice = input('-> ')
 
@@ -49,13 +49,13 @@ def delete_todo():
     
     try:
         choice = int(choice)
-    except IndexError:
+    except ValueError:
         cprint('Tarefa Nao Existe','red')
         time.sleep(1)
         clear()
 
     if 0 < choice <= len(task_list):
-        print('\033[1;32mTarefa Apagada Com Sucesso\033[m')
+        cprint('Tarefa Apagada Com Sucesso','green')
         task_list.pop(choice-1)
         time.sleep(1)
         clear()
@@ -66,7 +66,7 @@ def delete_todo():
 
 
 def update():
-    print('\033[1;32mQual Tarefa Deseja Alterar?    [V]oltar\033[m\n')
+    cprint('Qual Tarefa Deseja Alterar?\t[V]oltar\n','green')
     list_todo()
     index = input('-> ')
 
@@ -84,7 +84,7 @@ def update():
         return update()
 
     if 0 < index <= len(task_list):
-        new_value = input('\033[33mSobrescrever com -> \033[m')
+        new_value = input(colored('Sobrescrever com -> ','yellow'))
         task_list[int(index)-1] = new_value
         cprint(f'Tarefa Alterada -> [{index}]','cyan')
     else:
@@ -108,7 +108,8 @@ while True:
     \r-> \033[m"""
 
     try:
-        option = input(MENU);clear()
+        option = input(MENU)
+        clear()
 
         match option:
             case '1':
@@ -120,7 +121,6 @@ while True:
                     update()
             case '3':
                 list_todo()
-                # input()
             case '4':
                 if len(task_list) == 0:
                     alert()
