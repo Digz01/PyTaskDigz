@@ -68,7 +68,7 @@ def delete_todo():
 def update():
     cprint('Qual Tarefa Deseja Alterar?\t[V]oltar\n','green')
     list_todo()
-    index = input('-> ')
+    index = input(colored('-> ','green'))
 
     if index.upper() == 'V':
         time.sleep(0.5)
@@ -128,13 +128,13 @@ while True:
                     delete_todo()
             case '5':
                 time.sleep(0.5)
-                cprint('Exited','red')
+                cprint('Encerrado','red')
                 break
             case _:
-                cprint('Invalid Option!','red',attrs=['bold'])
+                cprint('Opcao Invalida!','red',attrs=['bold'])
 
     except KeyboardInterrupt:
-        cprint('\nExiting...','red')
+        cprint('Saindo...','red')
         time.sleep(1)
         clear()
         break
