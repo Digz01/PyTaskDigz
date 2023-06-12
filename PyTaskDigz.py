@@ -54,7 +54,7 @@ def delete_todo():
         time.sleep(1)
         clear()
 
-    if choice <= len(task_list):
+    if 0 < choice <= len(task_list):
         print('\033[1;32mTarefa Apagada Com Sucesso\033[m')
         task_list.pop(choice-1)
         time.sleep(1)
@@ -83,7 +83,7 @@ def update():
         clear()
         return update()
 
-    if index <= len(task_list):
+    if 0 < index <= len(task_list):
         new_value = input('\033[33mSobrescrever com -> \033[m')
         task_list[int(index)-1] = new_value
         cprint(f'Tarefa Alterada -> [{index}]','cyan')
