@@ -35,7 +35,7 @@ def add_todo():
 
 def list_todo():
     time.sleep(0.5)
-    cprint(f'Tarefas pendentes: {len(task_list)}','green')
+    cprint(f'Tarefas pendentes: {len([i for i in task_list if not task_list[i][1]])}','green')
 
     for key, value in task_list.items():
         if value[1]:
@@ -113,8 +113,8 @@ def update():
     time.sleep(1)
 
 
-def complete_task():
-    cprint('Qual tarefa deseja marcar como concluída?\t[V]oltar\n','green')
+def change_status():
+    cprint('Deseja mudar o status de qual tarefa?\t[V]oltar\n','green')
     list_todo()
     index = input(colored('-> ','yellow'))
 
@@ -129,15 +129,20 @@ def complete_task():
         cprint('Tarefa não existe', 'red')
         time.sleep(0.5)
         clear()
-        return complete_task()
+        return change_status()
 
     if index in task_list.keys():
-        task_list.get(index)[1] = True
+        if task_list.get(index)[1]:
+            task_list.get(index)[1] = False
+            msg = 'não concluída'
+        else:
+            task_list.get(index)[1] = True
+            msg = 'concluída'
 
         save(task_list)
 
-        cprint(f'Tarefa marcada como concluída -> [{index}]', 'cyan')
-        time.sleep(0.5)
+        cprint(f'Tarefa marcada como {msg} -> [{index}]', 'cyan')
+        time.sleep(1)
         clear()
     else:
         cprint('Tarefa não existe', 'red')
@@ -180,18 +185,18 @@ def begin():
     ' |   \ . ,-. ,_,   `- | ,-. ,-| ,-.
     , |   / | | |  /     , | | | | | | |
     `-^--'  ' `-| '"'    `-' `-' `-' `-'
-            ,|          v1
-            `'
+               ,|          v1
+               `'
             """\
             ,'red', attrs=['bold','blink'])
 
 
         MENU = f"""\n \033[1;32mGerenciador de Tarefas:\033[m\r
         \033[33m
-    [1] Adicionar Tarefa\t[0] Encerrar
+    [1] Adicionar Tarefa\t\t[0] Encerrar
     [2] Alterar Tarefa
     [3] Ver Tarefas
-    [4] Marcar como concluída
+    [4] Alterar status da tarefa
     [5] Deletar Tarefa
     [6] Reiniciar Programa
         \r-> \033[m"""
@@ -215,7 +220,7 @@ def begin():
                     list_todo()
 
                 case '4':
-                    complete_task()
+                    change_status()
 
                 case '5':
                     if len(task_list) == 0:
