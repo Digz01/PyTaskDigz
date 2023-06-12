@@ -1,154 +1,186 @@
 import os
 import time
-from termcolor import cprint,colored
+from termcolor import cprint, colored
+import json
 
-task_list = []
 
 def clear():
-    if os.name == 'nt':
-        os.system('cls')
-    else:
-        os.system('clear')
-
+	if os.name == 'nt':
+		os.system('cls')
+	else:
+		os.system('clear')
+		
 
 def alert():
-    cprint('[!] Nenhuma Tarefa a ser apagada ou modificada!','red')
-    time.sleep(1)
-
+	cprint('[!] Nenhuma tarefa a ser apagada ou modificada!', 'red')
+	time.sleep(1)
+	
 
 def add_todo():
-    cprint('Digite a tarefa:\t[V]oltar','green')
-    task = input('-> ')
-
-    if task.upper() == 'V':
-        time.sleep(0.5);clear()
-        return
-
-
-    cprint('Tarefa adicionada com sucesso!','green')
-    task_list.append(task);time.sleep(1);clear()
+	cprint('Digite a tarefa:\t[V]oltar')
+	task = input('-> ')
+	
+	if task.upper() == 'V':
+		time.sleep(0.5)
+		clear()
+		return
+	
+	task_list[len(task_list)+1] = task
+	save(task_list)
+	cprint('Tarefa adicionada com sucesso!')
+	clear()
 
 
 def list_todo():
-    time.sleep(0.5)
-    cprint(f'Tarefas Pendentes: {len(task_list)}','green')
-
-    for index,task in enumerate(task_list):
-        print(f'[{index+1}] {task}')
-
+	time.sleep(0.5)
+	cprint(f'Tarefas pendentes: {len(task_list)}')
+	
+	for key, value in task_list.items():
+		print(f'[{key}] {value}')
+		
 
 def delete_todo():
-    cprint('Qual Tarefa Deseja Apagar?\t[V]oltar\n','green')
-    list_todo()
-    choice = input('-> ')
+	cprint('Qual tarefa deseja apagar?\t[V]oltar')
+	list_todo()
+	choice = input('-> ')
+	
+	if choice.upper() == 'V':
+		time.sleep(0.5)
+		clear()
+		return
+	
+	try:
+		choice = int(choice)
+	except ValueError:
+		cprint('Tarefa não existe', 'red')
+		time.sleep(1)
+		clear()
 
-    if choice.upper() == 'V':
-        time.sleep(0.5);clear()
-        return
-
-    try:
-        choice = int(choice)
-    except ValueError:
-        cprint('Tarefa Nao Existe','red')
-        time.sleep(1)
-        clear()
-        return delete_todo()
-
-    if 0 < choice <= len(task_list):
-        cprint('Tarefa Apagada Com Sucesso','green')
-        task_list.pop(choice-1)
-        time.sleep(1)
-        clear()
-    else:
-        cprint('Tarefa Nao Existe','red')
-        time.sleep(1)
-        clear()
+	if 0 < choice <= len(task_list):
+		del(task_list[choice])
+		save(task_list)
+		cprint('Tarefa apagada com sucesso!')
+		time.sleep(1)
+		clear()
+	else:
+		cprint('Tarefa não existe', 'red')
+		time.sleep(1)
+		clear()
 
 
 def update():
-    cprint('Qual Tarefa Deseja Alterar?\t[V]oltar\n','green')
-    list_todo()
-    index = input(colored('-> ','green'))
+	cprint('Qual tarefa deseja alterar?\t[V]oltar')
+	list_todo()
+	index = input('-> ')
 
-    if index.upper() == 'V':
-        time.sleep(0.5)
-        clear()
-        return
+	if index.upper() == 'V':
+		time.sleep(0.5)
+		clear()
+		return
 
-    try:
-        index = int(index)
-    except ValueError:
-        cprint('Tarefa Nao Existe','red')
-        time.sleep(0.5)
-        clear()
-        return update()
+	try:
+		index = int(index)
+	except ValueError:
+		cprint('Tarefa não existe', 'red')
+		time.sleep(0.5)
+		clear()
+		return update()
 
-    if 0 < index <= len(task_list):
-        new_value = input(colored('Sobrescrever com -> ','yellow'))
-        task_list[int(index)-1] = new_value
-        cprint(f'Tarefa Alterada -> [{index}]','cyan')
-    else:
-        cprint('Tarefa Nao Existe','red')
-
-    time.sleep(1);clear()
-
-
-
-
-clear()
-while True:
-    cprint("""\n
-.-,--.              ,--,--'    .       
-' |   \ . ,-. ,_,   `- | ,-. ,-| ,-.   
-, |   / | | |  /     , | | | | | | |   
-`-^--'  ' `-| '"'    `-' `-' `-' `-'   
-           ,|      v1                  
-           `'                          
-           """\
-        ,'red', attrs=['bold','blink'])
+	if index in task_list.keys():
+		new_value = input(colored('Sobrescrever com -> '))
+		task_list[index] = new_value
+		save(task_list)
+		cprint(f'Tarefa alterada -> [{index}]', 'cyan')
+	else:
+		cprint('Tarefa não existe', 'red')
+		
+	time.sleep(1)
 
 
-    MENU = f"""\n Gerenciador de Tarefas:\r \033[33m
-    [1] Adicionar Tarefa
-    [2] Alterar Tarefa
-    [3] Ver Tarefas
-    [4] Deletar Tarefa
-    [5] Encerrar
-    \r-> \033[m"""
+def save(tl: dict):
+	try:
+		jd = json.dumps(task_list, indent=4, ensure_ascii=False, separators=(',', ':'))
+		with open('db_tasks.json', 'w', encoding='CP850') as f:
+			f.write(jd)
 
-    try:
-        option = input(colored(MENU,'green'))
-        clear()
+	except Exception as error:
+		print(error)
 
-        match option:
-            case '1':
-                add_todo()
-                
-            case '2':
-                if len(task_list) == 0:
-                    alert()
-                else:
-                    update()
-                    
-            case '3':
-                list_todo()
-                
-            case '4':
-                if len(task_list) == 0:
-                    alert()
-                else:
-                    delete_todo()
-                    
-            case '5':
-                time.sleep(0.5)
-                cprint('Encerrado','red')
-                break
-            
-            case _:
-                cprint('Opcao Invalida!','red',attrs=['bold'])
 
-    except KeyboardInterrupt:
-        cprint('\nSaindo...','red')
-        time.sleep(1)
-        clear()
-        break
+def load() -> dict:
+	global task_list
+	try:
+		with open('db_tasks.json', 'r', encoding='CP850') as f:
+			task_list = json.load(f)
+
+		task_list = {int(i):j for i,j in task_list.items()}
+  
+		return task_list
+
+	except Exception as error:
+		print(error)
+		return False
+
+
+def begin():
+		
+	clear()
+
+	while True:
+		cprint('\nDigz Todo-List ', 'green', attrs=['blink'])
+
+		MENU = f'''\n\033[1;32mGerenciador de tarefas:
+[1] Adicionar tarefa
+[2] Alterar tarefa
+[3] Ver tarefas
+[4] Deletar tarefa
+[5] Encerrar
+\r-> \033[m'''.strip()
+
+		try:
+			option = input(MENU)
+			clear()
+
+			match option:
+
+				case '1':
+					add_todo()
+
+				case '2':
+					if len(task_list) == 0:
+						alert()
+					else:
+						update()
+
+				case '3':
+					list_todo()
+
+				case '4':
+					if len(task_list) == 0:
+						alert()
+					else:
+						delete_todo()
+
+				case '5':
+					time.sleep(0.5)
+					cprint('Exited', 'red')
+					break
+
+				case _:
+					cprint('Invalid option!', 'red', attrs=['bold'])
+
+		except KeyboardInterrupt:
+			cprint('\nExiting...', 'red')
+			time.sleep(1)
+			clear()
+			break
+
+
+if __name__ == '__main__':
+
+	if 'db_tasks.json' in os.listdir():
+		task_list = load()
+	else:
+		task_list = {}
+
+	begin()
