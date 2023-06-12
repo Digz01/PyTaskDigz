@@ -26,7 +26,7 @@ def add_todo():
         clear()
         return
 
-    task_list[len(task_list)+1] = task
+    task_list[len(task_list)+1] = [task, False]
     save(task_list)
     cprint('Tarefa adicionada com sucesso!','green')
     time.sleep(1)
@@ -38,10 +38,12 @@ def list_todo():
     cprint(f'Tarefas pendentes: {len(task_list)}','green')
 
     for key, value in task_list.items():
-        print(f'[{key}] {value}')
+        if value[1]:
+            cprint(f'[{key}] {value[0]}', 'blue')
+        else:
+            print(f'[{key}] {value[0]}')
 
     time.sleep(1)
-
 
 
 def delete_todo():
@@ -98,11 +100,43 @@ def update():
 
     if index in task_list.keys():
         new_value = input(colored('Sobrescrever com -> ','yellow'))
-        task_list[index] = new_value
+        task_list[index][0] = new_value
         
         save(task_list)
         
         cprint(f'Tarefa alterada -> [{index}]', 'cyan')
+        time.sleep(0.5)
+        clear()
+    else:
+        cprint('Tarefa não existe', 'red')
+
+    time.sleep(1)
+
+
+def complete_task():
+    cprint('Qual tarefa deseja marcar como concluída?\t[V]oltar\n','green')
+    list_todo()
+    index = input(colored('-> ','yellow'))
+
+    if index.upper() == 'V':
+        time.sleep(0.5)
+        clear()
+        return
+
+    try:
+        index = int(index)
+    except ValueError:
+        cprint('Tarefa não existe', 'red')
+        time.sleep(0.5)
+        clear()
+        return complete_task()
+
+    if index in task_list.keys():
+        task_list.get(index)[1] = True
+
+        save(task_list)
+
+        cprint(f'Tarefa marcada como concluída -> [{index}]', 'cyan')
         time.sleep(0.5)
         clear()
     else:
@@ -157,8 +191,9 @@ def begin():
     [1] Adicionar Tarefa\t[0] Encerrar
     [2] Alterar Tarefa
     [3] Ver Tarefas
-    [4] Deletar Tarefa
-    [5] Reiniciar Programa
+    [4] Marcar como concluída
+    [5] Deletar Tarefa
+    [6] Reiniciar Programa
         \r-> \033[m"""
 
         try:
@@ -180,12 +215,15 @@ def begin():
                     list_todo()
 
                 case '4':
+                    complete_task()
+
+                case '5':
                     if len(task_list) == 0:
                         alert()
                     else:
                         delete_todo()
 
-                case '5':
+                case '6':
                     begin()
 
                 case '0':
@@ -201,6 +239,7 @@ def begin():
             time.sleep(1)
             clear()
             break
+
 
 
 if __name__ == '__main__':
