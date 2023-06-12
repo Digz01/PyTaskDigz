@@ -45,7 +45,8 @@ def list_todo():
 
 
 def delete_todo():
-
+    global task_list
+    
     cprint('Qual tarefa deseja apagar?\t[V]oltar\n','green')
     list_todo()
     choice = input(colored('-> ','red'))
@@ -65,6 +66,7 @@ def delete_todo():
 
     if 0 < choice <= len(task_list):
         del(task_list[choice])
+        task_list = {i+1:j[1] for i, j in enumerate(task_list.items())}
         save(task_list)
         cprint('Tarefa apagada com sucesso!','yellow')
         time.sleep(1)
