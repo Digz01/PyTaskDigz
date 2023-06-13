@@ -114,6 +114,13 @@ def update():
 
 
 def change_status():
+    
+    if len(task_list) == 0:
+        cprint('Nenhuma tarefa a ser alterada!', 'red')
+        time.sleep(0.5)
+        clear()
+        return
+    
     cprint('Deseja mudar o status de qual tarefa?\t[V]oltar\n','green')
     list_todo()
     index = input(colored('-> ','yellow'))
@@ -152,7 +159,7 @@ def change_status():
 
 def save(tl: dict):
     try:
-        jd = json.dumps(task_list, indent=4, ensure_ascii=False, separators=(',', ':'))
+        jd = json.dumps(task_list, indent=4, separators=(',', ':'))
         with open(os.path.join(path,'db_tasks.json'), 'w', encoding='CP850') as f:
             f.write(jd)
 
