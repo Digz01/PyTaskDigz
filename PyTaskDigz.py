@@ -48,7 +48,7 @@ def list_todo():
 
 def delete_todo():
     global task_list
-    
+
     cprint('Qual tarefa deseja apagar?\t[V]oltar\n','green')
     list_todo()
     choice = input(colored('-> ','red'))
@@ -101,7 +101,7 @@ def update():
     if index in task_list.keys():
         new_value = input(colored('Sobrescrever com -> ','yellow'))
         task_list[index][0] = new_value
-        
+
         save(task_list)
         
         cprint(f'Tarefa alterada -> [{index}]', 'cyan')
@@ -114,13 +114,13 @@ def update():
 
 
 def change_status():
-    
+
     if len(task_list) == 0:
         cprint('Nenhuma tarefa a ser alterada!', 'red')
         time.sleep(0.5)
         clear()
         return
-    
+
     cprint('Deseja mudar o status de qual tarefa?\t[V]oltar\n','green')
     list_todo()
     index = input(colored('-> ','yellow'))
